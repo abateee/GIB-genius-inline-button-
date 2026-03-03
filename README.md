@@ -31,3 +31,4 @@ Extension prête à charger localement dans Chrome / Brave / Edge / Firefox.
 ## Notes
 - le matching dépend du titre/artiste visibles sur la page
 - si un site change son HTML, certains sélecteurs pourront nécessiter un ajustement
+- faut se rappeler que pour l'instant c'est juste du dorking avec un regex pour + facilement trouver le bon lien 
