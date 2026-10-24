@@ -95,9 +95,13 @@
     const parsed = globalThis.GIBParse.parseSpotify(text(titleNode), artistNodes.map(text));
     return {
       titleNode,
+      // The title row clips long titles (overflow: hidden): put the button
+      // right after that row so it never gets cut off.
+      anchorNode: titleNode.closest('[data-testid="context-item-info-title"]') || titleNode,
       title: parsed.title,
       artists: parsed.artists,
-      compact: true
+      compact: true,
+      block: true
     };
   }
 
@@ -186,6 +190,7 @@
 
     removeSlots();
     slot = createSlot(ctx.compact);
+    if (ctx.block && anchor !== ctx.titleNode) slot.classList.add('genius-inline-slot--block');
     anchor.insertAdjacentElement('afterend', slot);
   }
 
