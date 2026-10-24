@@ -229,3 +229,18 @@ test('isLikelyMusicVideo écarte les vidéos classiques', () => {
   assert.equal(isLikelyMusicVideo("I Don't Know What To Do", 'Some Vlogger'), false);
   assert.equal(isLikelyMusicVideo('', 'TheWeekndVEVO'), false);
 });
+
+test('cleanTitle comprend les featurings traduits par YouTube Music', () => {
+  assert.deepEqual(
+    cleanTitle('Get Lucky (Official Audio) (avec Pharrell Williams et Nile Rodgers)'),
+    { title: 'Get Lucky', featured: ['Pharrell Williams', 'Nile Rodgers'] }
+  );
+  assert.deepEqual(cleanTitle('Song (with A and B)').featured, ['A', 'B']);
+  assert.deepEqual(cleanTitle('Canción (con A y B)').featured, ['A', 'B']);
+  assert.deepEqual(cleanTitle('Lied (mit A und B)').featured, ['A', 'B']);
+});
+
+test('cleanTitle ne coupe pas un nom en dehors des featurings', () => {
+  assert.equal(cleanTitle('Simon and Garfunkel - Song').title, 'Simon and Garfunkel - Song');
+  assert.deepEqual(parseYouTube('Simon & Garfunkel - The Boxer', 'x').artists[0], 'Simon & Garfunkel');
+});
