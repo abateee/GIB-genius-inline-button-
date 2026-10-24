@@ -64,7 +64,9 @@
       titleNode,
       title: parsed.title,
       artists: parsed.artists,
-      compact: true
+      compact: true,
+      // The title and the byline are stacked in a flex column: the button gets its own row.
+      block: true
     };
   }
 
@@ -254,7 +256,7 @@
 
     removeSlots();
     slot = createSlot(ctx.compact);
-    if (ctx.block && anchor !== ctx.titleNode) slot.classList.add('genius-inline-slot--block');
+    if (ctx.block) slot.classList.add('genius-inline-slot--block');
     anchor.insertAdjacentElement('afterend', slot);
   }
 
