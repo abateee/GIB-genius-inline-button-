@@ -1,0 +1,8 @@
+{
+  "name": "genius-inline-button",
+  "private": true,
+  "description": "Dev tooling only: the extension itself has no dependencies.",
+  "scripts": {
+    "test": "node --test"
+  }
+}
