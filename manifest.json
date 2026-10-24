@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Genius Inline Button",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Adds a Genius button next to the current song title on YouTube, YouTube Music, and Spotify Web.",
   "minimum_chrome_version": "121",
   "browser_specific_settings": {
