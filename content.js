@@ -1,4 +1,5 @@
 (() => {
+  const { cleanupTitle, unique, buildQuery } = globalThis.GIBParse;
   const BUTTON_ATTR = 'data-genius-inline-button';
   const BUTTON_SLOT_ATTR = 'data-genius-inline-slot';
   const SVG_LOGO = `
@@ -18,21 +19,7 @@
   }
 
   function text(el) {
-    return (el?.textContent || '').replace(/\s+/g, ' ').trim();
-  }
-
-  function cleanupTitle(raw = '') {
-    return raw
-      .replace(/\s*[-–—|]\s*YouTube(?:\s*Music)?$/i, '')
-      .replace(/\s*[|]\s*Spotify$/i, '')
-      .replace(/\s*\((official|official video|official audio|lyrics?|audio|video|visualizer|mv|hd|4k)\)\s*/ig, ' ')
-      .replace(/\s*\[(official|official video|official audio|lyrics?|audio|video|visualizer|mv|hd|4k)\]\s*/ig, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function unique(list) {
-    return [...new Set(list.filter(Boolean).map(s => s.trim()).filter(Boolean))];
+    return globalThis.GIBParse.collapse(el?.textContent);
   }
 
   function getYouTubeContext() {
@@ -105,13 +92,6 @@
       default:
         return null;
     }
-  }
-
-  function buildQuery(ctx) {
-    const parts = [];
-    if (ctx.title) parts.push(ctx.title);
-    if (ctx.artists?.length) parts.push(ctx.artists.join(' '));
-    return parts.join(' ').trim();
   }
 
   function buildLuckyUrl(query) {

@@ -17,6 +17,7 @@
         "*://open.spotify.com/*"
       ],
       "js": [
+        "lib/parse.js",
         "content.js"
       ],
       "css": [
