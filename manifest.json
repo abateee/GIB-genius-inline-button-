@@ -9,6 +9,14 @@
     "48": "icons/genius-48.png",
     "128": "icons/genius-128.png"
   },
+  "background": {
+    "service_worker": "background.js",
+    "scripts": [
+      "lib/parse.js",
+      "lib/match.js",
+      "background.js"
+    ]
+  },
   "content_scripts": [
     {
       "matches": [
@@ -18,6 +26,7 @@
       ],
       "js": [
         "lib/parse.js",
+        "lib/match.js",
         "content.js"
       ],
       "css": [
@@ -29,6 +38,7 @@
   "host_permissions": [
     "*://www.youtube.com/*",
     "*://music.youtube.com/*",
-    "*://open.spotify.com/*"
+    "*://open.spotify.com/*",
+    "https://genius.com/*"
   ]
 }

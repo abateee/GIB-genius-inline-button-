@@ -46,6 +46,7 @@
       titleNode,
       title: parsed.title,
       artists: parsed.artists,
+      swappable: parsed.swappable,
       compact: false
     };
   }
@@ -118,15 +119,60 @@
     }
   }
 
-  function buildLuckyUrl(query) {
-    const q = `site:genius.com ${query}`;
-    return `https://www.google.com/search?btnI=I&q=${encodeURIComponent(q)}`;
+  const runtime = (globalThis.browser ?? globalThis.chrome)?.runtime;
+  // Must stay under the ~5 s browsers give to open a popup after a click.
+  const BACKGROUND_TIMEOUT_MS = 4500;
+
+  function setBusy(button, busy) {
+    if (!button) return;
+    if (busy) button.setAttribute('aria-busy', 'true');
+    else button.removeAttribute('aria-busy');
   }
 
-  function openGenius(ctx) {
+  function openInPage(url) {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  /**
+   * The background finds the song page and opens the tab. If it cannot (extension
+   * reloaded without refreshing the page, no answer, tabs.create refused), the
+   * page opens the Genius result or search page itself.
+   */
+  function openGenius(ctx, { button, background } = {}) {
     const query = buildQuery(ctx);
     if (!query) return;
-    window.open(buildLuckyUrl(query), '_blank', 'noopener,noreferrer');
+    const fallback = globalThis.GIBMatch.searchUrl(query);
+
+    // "Extension context invalidated": the old script is still running in this tab.
+    if (!runtime || !runtime.id) {
+      openInPage(fallback);
+      return;
+    }
+    if (button && button.getAttribute('aria-busy') === 'true') return; // double click
+
+    setBusy(button, true);
+    let settled = false;
+    const finish = (response) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      setBusy(button, false);
+      if (!response || !response.ok) openInPage((response && response.url) || fallback);
+    };
+    const timer = setTimeout(() => finish(null), BACKGROUND_TIMEOUT_MS);
+
+    try {
+      // Promise form: works with chrome.* (Chrome MV3) and browser.* (Firefox),
+      // which does not take a callback. No listener or a crash rejects.
+      Promise.resolve(runtime.sendMessage({
+        type: 'gib:open',
+        ctx: { title: ctx.title, artists: ctx.artists, swappable: ctx.swappable === true },
+        background: background === true
+      })).then(finish, () => finish(null));
+    } catch (error) {
+      // Thrown synchronously when the extension context is gone.
+      finish(null);
+    }
   }
 
   function onActivate(event) {
