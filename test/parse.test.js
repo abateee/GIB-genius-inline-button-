@@ -182,3 +182,30 @@ test('parseYouTubeMusic se rabat sur la ligne d\'artistes sans lien', () => {
 test('parseYouTubeMusic sans rien en lecture', () => {
   assert.deepEqual(parseYouTubeMusic('', [], ''), { title: '', artists: [], swappable: false });
 });
+
+const { parseSpotify } = require('../lib/parse.js');
+
+test('parseSpotify retire les versions après le tiret', () => {
+  const cases = {
+    'Bohemian Rhapsody - Remastered 2011': 'Bohemian Rhapsody',
+    'Wonderwall - 2014 Remaster': 'Wonderwall',
+    'Hey Jude - Live': 'Hey Jude',
+    'Let It Go - From "Frozen"': 'Let It Go',
+    'Song - Radio Edit': 'Song',
+    'Song - Mono Version': 'Song',
+    'Song - 2009': 'Song'
+  };
+  for (const [raw, expected] of Object.entries(cases)) {
+    assert.equal(parseSpotify(raw, ['A']).title, expected, raw);
+  }
+});
+
+test('parseSpotify garde un tiret qui fait partie du titre', () => {
+  assert.equal(parseSpotify('Sign - O - The Times', ['Prince']).title, 'Sign - O - The Times');
+  assert.equal(parseSpotify('Song - X Remix', ['A']).title, 'Song - X Remix');
+});
+
+test('parseSpotify ajoute les featurings aux artistes', () => {
+  assert.deepEqual(parseSpotify('Song (feat. B)', ['A']), { title: 'Song', artists: ['A', 'B'], swappable: false });
+  assert.deepEqual(parseSpotify('Song (with B)', ['A', 'B']).artists, ['A', 'B']);
+});

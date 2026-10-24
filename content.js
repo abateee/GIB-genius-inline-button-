@@ -62,26 +62,32 @@
   }
 
   function getSpotifyContext() {
-    const candidates = [
-      document.querySelector('[data-testid="context-item-link"]'),
-      document.querySelector('[data-testid="now-playing-widget"] a[href*="/track/"]'),
-      document.querySelector('.now-playing-widget a[href*="/track/"]')
-    ].filter(Boolean);
+    // Bottom "now playing" bar only: the right sidebar and the pages also list artists.
+    const scope = document.querySelector('[data-testid="now-playing-widget"]')
+      || document.querySelector('.now-playing-widget')
+      || document.querySelector('[data-testid="now-playing-bar"]')
+      || document;
 
-    const titleNode = candidates[0] || null;
-
-    const artistNodes = [
-      ...document.querySelectorAll('[data-testid="context-item-info-artist"] a'),
-      ...document.querySelectorAll('[data-testid="now-playing-widget"] a[href*="/artist/"]'),
-      ...document.querySelectorAll('.now-playing-widget a[href*="/artist/"]')
-    ];
+    const titleNode = scope.querySelector('[data-testid="context-item-link"]')
+      || scope.querySelector('a[href*="/track/"]');
 
     if (!titleNode) return null;
 
+    // Podcasts, episodes and ads also show up here: only songs get a button.
+    const href = titleNode.getAttribute('href') || '';
+    if (!/\/(track|album)\//.test(href)) return null;
+
+    // data-testid sits either on the link itself or on a wrapper, depending on the Spotify version.
+    let artistNodes = [...scope.querySelectorAll(
+      'a[data-testid="context-item-info-artist"], [data-testid="context-item-info-artist"] a'
+    )];
+    if (!artistNodes.length) artistNodes = [...scope.querySelectorAll('a[href*="/artist/"]')];
+
+    const parsed = globalThis.GIBParse.parseSpotify(text(titleNode), artistNodes.map(text));
     return {
       titleNode,
-      title: cleanupTitle(text(titleNode)),
-      artists: unique(artistNodes.map(text)),
+      title: parsed.title,
+      artists: parsed.artists,
       compact: true
     };
   }
