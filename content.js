@@ -45,14 +45,18 @@
     const titleNode = document.querySelector('ytmusic-player-bar .title')
       || document.querySelector('ytmusic-player-bar .content-info-wrapper .title');
 
-    const artistNodes = [...document.querySelectorAll('ytmusic-player-bar .byline a')];
+    const byline = document.querySelector('ytmusic-player-bar .byline');
+    // The byline also links the album ("browse/MPRE...") : keep artist channels only.
+    const artistNodes = [...(byline?.querySelectorAll('a') || [])]
+      .filter(a => /(^|\/)channel\//.test(a.getAttribute('href') || ''));
 
     if (!titleNode) return null;
 
+    const parsed = globalThis.GIBParse.parseYouTubeMusic(text(titleNode), artistNodes.map(text), text(byline));
     return {
       titleNode,
-      title: cleanupTitle(text(titleNode)),
-      artists: unique(artistNodes.map(text)),
+      title: parsed.title,
+      artists: parsed.artists,
       compact: true
     };
   }

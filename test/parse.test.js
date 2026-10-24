@@ -165,3 +165,20 @@ test('parseYouTube gère le format COLORS', () => {
   assert.equal(r.title, 'Black Dog');
   assert.equal(r.artists[0], 'Arlo Parks');
 });
+
+const { parseYouTubeMusic } = require('../lib/parse.js');
+
+test('parseYouTubeMusic garde les artistes passés et nettoie le titre', () => {
+  const r = parseYouTubeMusic('Get Lucky (feat. Pharrell Williams)', ['Daft Punk'], 'Daft Punk • Random Access Memories • 2013');
+  assert.deepEqual(r, { title: 'Get Lucky', artists: ['Daft Punk', 'Pharrell Williams'], swappable: false });
+});
+
+test('parseYouTubeMusic se rabat sur la ligne d\'artistes sans lien', () => {
+  const r = parseYouTubeMusic('Song (Official Video)', [], 'A & B • 12 M de vues • 100 k J\'aime');
+  assert.deepEqual(r.artists, ['A & B', 'A', 'B']);
+  assert.equal(r.title, 'Song');
+});
+
+test('parseYouTubeMusic sans rien en lecture', () => {
+  assert.deepEqual(parseYouTubeMusic('', [], ''), { title: '', artists: [], swappable: false });
+});
