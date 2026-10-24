@@ -2,10 +2,7 @@
   const { buildQuery } = globalThis.GIBParse;
   const SLOT_ATTR = 'data-genius-inline-slot';
   const RENDER_DELAY_MS = 120;
-  const SVG_LOGO = `
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="genius-inline-btn__logo">
-      <path fill="currentColor" d="M4 4h16v3H7v3h10v3H7v4h13v3H4z"></path>
-    </svg>`;
+  const SVG_NS = 'http://www.w3.org/2000/svg';
 
   let slot = null;
   let renderTimer = 0;
@@ -188,6 +185,27 @@
     });
   }
 
+  // Built with the DOM API: YouTube enforces Trusted Types, which reject innerHTML strings.
+  function createLogo() {
+    const svg = document.createElementNS(SVG_NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 24 24');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.setAttribute('class', 'genius-inline-btn__logo');
+    const path = document.createElementNS(SVG_NS, 'path');
+    path.setAttribute('fill', 'currentColor');
+    path.setAttribute('d', 'M4 4h16v3H7v3h10v3H7v4h13v3H4z');
+    svg.appendChild(path);
+    return svg;
+  }
+
+  function createLabel() {
+    const label = document.createElement('span');
+    label.className = 'genius-inline-btn__text';
+    label.textContent = 'Genius';
+    return label;
+  }
+
   function createSlot(compact) {
     const wrapper = document.createElement('span');
     wrapper.setAttribute(SLOT_ATTR, '1');
@@ -199,7 +217,7 @@
     if (compact) btn.classList.add('genius-inline-btn--small');
     btn.setAttribute('aria-label', 'Open Genius page');
     btn.title = 'Open on Genius';
-    btn.innerHTML = `${SVG_LOGO}<span class="genius-inline-btn__text">Genius</span>`;
+    btn.append(createLogo(), createLabel());
 
     btn.addEventListener('click', onActivate);
     btn.addEventListener('auxclick', onActivate);
