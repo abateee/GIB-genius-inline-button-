@@ -23,16 +23,25 @@
   }
 
   function getYouTubeContext() {
+    // YouTube keeps the last watch page hidden in the DOM when you go back to
+    // the home page or open a Short: only real watch pages get a button.
+    if (location.pathname !== '/watch') return null;
+
     const titleNode = document.querySelector('ytd-watch-metadata h1 yt-formatted-string')
       || document.querySelector('h1.ytd-watch-metadata yt-formatted-string')
       || document.querySelector('h1.title yt-formatted-string');
 
+    // "#channel-name" alone also matches every recommended video in the sidebar.
     const artistNode = document.querySelector('ytd-watch-metadata ytd-channel-name a')
-      || document.querySelector('#channel-name a');
+      || document.querySelector('#owner #channel-name a');
 
     if (!titleNode) return null;
 
-    const parsed = globalThis.GIBParse.parseYouTube(text(titleNode), text(artistNode));
+    const rawTitle = text(titleNode);
+    const rawChannel = text(artistNode);
+    if (!globalThis.GIBParse.isLikelyMusicVideo(rawTitle, rawChannel)) return null;
+
+    const parsed = globalThis.GIBParse.parseYouTube(rawTitle, rawChannel);
     return {
       titleNode,
       title: parsed.title,
@@ -138,9 +147,17 @@
     if (old) old.remove();
   }
 
+  function removeAllButtons() {
+    document.querySelectorAll(`[${BUTTON_SLOT_ATTR}="1"]`).forEach(el => el.remove());
+    lastFingerprint = '';
+  }
+
   function inject() {
     const ctx = getContext();
-    if (!ctx?.titleNode || !ctx.title) return;
+    if (!ctx?.titleNode || !ctx.title) {
+      removeAllButtons();
+      return;
+    }
 
     const fingerprint = JSON.stringify({
       s: site(),

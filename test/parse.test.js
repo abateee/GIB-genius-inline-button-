@@ -209,3 +209,23 @@ test('parseSpotify ajoute les featurings aux artistes', () => {
   assert.deepEqual(parseSpotify('Song (feat. B)', ['A']), { title: 'Song', artists: ['A', 'B'], swappable: false });
   assert.deepEqual(parseSpotify('Song (with B)', ['A', 'B']).artists, ['A', 'B']);
 });
+
+const { isLikelyMusicVideo } = require('../lib/parse.js');
+
+test('isLikelyMusicVideo reconnaît les clips', () => {
+  assert.ok(isLikelyMusicVideo('The Weeknd - Blinding Lights', 'The Weeknd'));
+  assert.ok(isLikelyMusicVideo('Blinding Lights (Official Video)', 'The Weeknd'));
+  assert.ok(isLikelyMusicVideo('Blinding Lights', 'TheWeekndVEVO'));
+  assert.ok(isLikelyMusicVideo('Blinding Lights', 'The Weeknd - Topic'));
+  assert.ok(isLikelyMusicVideo('Song', 'Universal Music'));
+  assert.ok(isLikelyMusicVideo("BTS (방탄소년단) 'Dynamite'", 'HYBE LABELS'));
+  assert.ok(isLikelyMusicVideo('YOASOBI「アイドル」', 'Ayase / YOASOBI'));
+  assert.ok(isLikelyMusicVideo('Song [Clip Officiel]', 'Artiste'));
+  assert.ok(isLikelyMusicVideo('Song ft. Someone', 'Artiste'));
+});
+
+test('isLikelyMusicVideo écarte les vidéos classiques', () => {
+  assert.equal(isLikelyMusicVideo('Comment installer Docker sur Windows', 'Grafikart'), false);
+  assert.equal(isLikelyMusicVideo("I Don't Know What To Do", 'Some Vlogger'), false);
+  assert.equal(isLikelyMusicVideo('', 'TheWeekndVEVO'), false);
+});
