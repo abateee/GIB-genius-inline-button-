@@ -1,14 +1,14 @@
 (() => {
-  const { cleanupTitle, unique, buildQuery } = globalThis.GIBParse;
-  const BUTTON_ATTR = 'data-genius-inline-button';
-  const BUTTON_SLOT_ATTR = 'data-genius-inline-slot';
+  const { buildQuery } = globalThis.GIBParse;
+  const SLOT_ATTR = 'data-genius-inline-slot';
+  const RENDER_DELAY_MS = 120;
   const SVG_LOGO = `
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="genius-inline-btn__logo">
       <path fill="currentColor" d="M4 4h16v3H7v3h10v3H7v4h13v3H4z"></path>
     </svg>`;
 
-  let lastFingerprint = '';
-  let scheduled = false;
+  let slot = null;
+  let renderTimer = 0;
 
   function site() {
     const host = location.hostname;
@@ -119,92 +119,102 @@
     return `https://www.google.com/search?btnI=I&q=${encodeURIComponent(q)}`;
   }
 
-  function createButton(ctx) {
+  function openGenius(ctx) {
+    const query = buildQuery(ctx);
+    if (!query) return;
+    window.open(buildLuckyUrl(query), '_blank', 'noopener,noreferrer');
+  }
+
+  function onActivate(event) {
+    if (event.type === 'auxclick' && event.button !== 1) return;
+    event.preventDefault();
+    event.stopPropagation();
+    // Read the page now: the song may have changed since the button was created.
+    const ctx = getContext();
+    if (!ctx || !ctx.title) return;
+    openGenius(ctx, {
+      button: event.currentTarget,
+      background: event.button === 1 || event.ctrlKey || event.metaKey
+    });
+  }
+
+  function createSlot(compact) {
+    const wrapper = document.createElement('span');
+    wrapper.setAttribute(SLOT_ATTR, '1');
+    wrapper.className = 'genius-inline-slot';
+
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'genius-inline-btn';
-    if (ctx.compact) btn.classList.add('genius-inline-btn--small');
-    btn.setAttribute(BUTTON_ATTR, '1');
+    if (compact) btn.classList.add('genius-inline-btn--small');
     btn.setAttribute('aria-label', 'Open Genius page');
     btn.title = 'Open on Genius';
     btn.innerHTML = `${SVG_LOGO}<span class="genius-inline-btn__text">Genius</span>`;
 
-    btn.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      const query = buildQuery(ctx);
-      if (!query) return;
-      window.open(buildLuckyUrl(query), '_blank', 'noopener,noreferrer');
-    });
+    btn.addEventListener('click', onActivate);
+    btn.addEventListener('auxclick', onActivate);
+    // Spotify and YouTube listen on parents (drag, play/pause, navigation).
+    for (const type of ['mousedown', 'mouseup', 'pointerdown', 'pointerup', 'dblclick']) {
+      btn.addEventListener(type, (event) => {
+        event.stopPropagation();
+        // Middle button: no autoscroll, the auxclick opens Genius in the background.
+        if (type === 'mousedown' && event.button === 1) event.preventDefault();
+      });
+    }
 
-    return btn;
+    wrapper.appendChild(btn);
+    return wrapper;
   }
 
-  function removeOldButtonNear(node) {
-    const parent = node?.parentElement;
-    if (!parent) return;
-    const old = parent.querySelector(`[${BUTTON_SLOT_ATTR}="1"]`);
-    if (old) old.remove();
+  function removeSlots() {
+    // Also catches buttons left by an older copy of the script (extension reloaded).
+    document.querySelectorAll(`[${SLOT_ATTR}]`).forEach(el => el.remove());
+    slot = null;
   }
 
-  function removeAllButtons() {
-    document.querySelectorAll(`[${BUTTON_SLOT_ATTR}="1"]`).forEach(el => el.remove());
-    lastFingerprint = '';
-  }
-
-  function inject() {
+  function render() {
     const ctx = getContext();
-    if (!ctx?.titleNode || !ctx.title) {
-      removeAllButtons();
+    const anchor = ctx && ctx.title ? (ctx.anchorNode || ctx.titleNode) : null;
+    if (!anchor || !anchor.parentElement) {
+      if (slot || document.querySelector(`[${SLOT_ATTR}]`)) removeSlots();
       return;
     }
 
-    const fingerprint = JSON.stringify({
-      s: site(),
-      t: ctx.title,
-      a: ctx.artists
-    });
+    // Already in place: touch nothing, otherwise the observer would loop.
+    if (slot && slot.isConnected && slot.previousElementSibling === anchor
+      && document.querySelectorAll(`[${SLOT_ATTR}]`).length === 1) return;
 
-    const parent = ctx.titleNode.parentElement;
-    if (!parent) return;
-
-    const alreadyInsideParent = parent.querySelector(`[${BUTTON_ATTR}="1"]`);
-    if (alreadyInsideParent && fingerprint === lastFingerprint) return;
-
-    removeOldButtonNear(ctx.titleNode);
-
-    const slot = document.createElement('span');
-    slot.setAttribute(BUTTON_SLOT_ATTR, '1');
-    slot.style.display = 'inline-flex';
-    slot.style.alignItems = 'center';
-    slot.appendChild(createButton(ctx));
-
-    ctx.titleNode.insertAdjacentElement('afterend', slot);
-    lastFingerprint = fingerprint;
+    removeSlots();
+    slot = createSlot(ctx.compact);
+    anchor.insertAdjacentElement('afterend', slot);
   }
 
-  function scheduleInject() {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(() => {
-      scheduled = false;
-      inject();
-    });
+  function scheduleRender() {
+    if (renderTimer) return;
+    renderTimer = setTimeout(() => {
+      renderTimer = 0;
+      render();
+    }, RENDER_DELAY_MS);
   }
 
-  const observer = new MutationObserver(() => {
-    scheduleInject();
+  const observer = new MutationObserver((mutations) => {
+    // Our own button changing (loading state) is not a reason to re-render.
+    if (slot && mutations.every(m => slot.contains(m.target))) return;
+    scheduleRender();
   });
 
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
-    characterData: true
+    characterData: true,
+    // Spotify sometimes only swaps the link target when the track changes.
+    attributes: true,
+    attributeFilter: ['href']
   });
 
-  window.addEventListener('yt-navigate-finish', scheduleInject, true);
-  window.addEventListener('popstate', scheduleInject, true);
-  window.addEventListener('load', scheduleInject, true);
+  for (const type of ['yt-navigate-finish', 'yt-page-data-updated', 'popstate', 'load']) {
+    window.addEventListener(type, scheduleRender, true);
+  }
 
-  scheduleInject();
+  scheduleRender();
 })();
