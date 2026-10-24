@@ -32,10 +32,11 @@
 
     if (!titleNode) return null;
 
+    const parsed = globalThis.GIBParse.parseYouTube(text(titleNode), text(artistNode));
     return {
       titleNode,
-      title: cleanupTitle(text(titleNode)),
-      artists: unique([text(artistNode)]),
+      title: parsed.title,
+      artists: parsed.artists,
       compact: false
     };
   }

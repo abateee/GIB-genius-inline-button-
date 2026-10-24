@@ -17,8 +17,8 @@ test('unique dédoublonne et ignore les valeurs vides', () => {
   assert.deepEqual(unique([' A ', 'A', '', null, 'B']), ['A', 'B']);
 });
 
-test('buildQuery assemble titre et artistes', () => {
-  assert.equal(buildQuery({ title: 'Song', artists: ['A', 'B'] }), 'Song A B');
+test('buildQuery assemble le titre et l\'artiste principal', () => {
+  assert.equal(buildQuery({ title: 'Song', artists: ['A & B', 'A', 'B'] }), 'Song A & B');
   assert.equal(buildQuery({ title: 'Song', artists: [] }), 'Song');
 });
 
@@ -83,4 +83,85 @@ test('splitNames découpe les collaborations courantes', () => {
 
 test('unique ignore la casse', () => {
   assert.deepEqual(unique(['Drake', 'drake', 'Future']), ['Drake', 'Future']);
+});
+
+const { cleanChannelName, parseYouTube } = require('../lib/parse.js');
+
+test('cleanTitle retire les mentions de clip sans parenthèses en fin de titre', () => {
+  assert.equal(cleanTitle('Song Official Video').title, 'Song');
+  assert.equal(cleanTitle('Song Clip Officiel').title, 'Song');
+  assert.equal(cleanTitle('Song MV').title, 'Song');
+});
+
+test('cleanChannelName nettoie VEVO, Topic et Official', () => {
+  assert.deepEqual(cleanChannelName('TaylorSwiftVEVO'), { name: 'Taylor Swift', isTopic: false, isVevo: true });
+  assert.deepEqual(cleanChannelName('ACDCVEVO'), { name: 'ACDC', isTopic: false, isVevo: true });
+  assert.deepEqual(cleanChannelName('Daft Punk - Topic'), { name: 'Daft Punk', isTopic: true, isVevo: false });
+  assert.equal(cleanChannelName('Stromae Officiel').name, 'Stromae');
+  assert.equal(cleanChannelName('Nirvana Official').name, 'Nirvana');
+  assert.equal(cleanChannelName('Lyrical Lemonade').name, 'Lyrical Lemonade');
+});
+
+test('parseYouTube prend l\'artiste dans le titre "Artiste - Titre"', () => {
+  const r = parseYouTube('The Weeknd - Blinding Lights (Official Video)', 'TheWeekndVEVO');
+  assert.equal(r.title, 'Blinding Lights');
+  assert.equal(r.artists[0], 'The Weeknd');
+  assert.equal(r.swappable, true);
+});
+
+test('parseYouTube gère les tirets demi-cadratin et cadratin', () => {
+  assert.equal(parseYouTube('Stromae – Papaoutai', 'x').title, 'Papaoutai');
+  assert.equal(parseYouTube('Stromae — Papaoutai', 'x').artists[0], 'Stromae');
+});
+
+test('parseYouTube ne coupe pas les traits d\'union collés', () => {
+  const r = parseYouTube('Jay-Z Song', 'JayZVEVO');
+  assert.equal(r.title, 'Jay-Z Song');
+  assert.equal(r.artists[0], 'Jay Z');
+});
+
+test('parseYouTube garde la chaîne comme artiste sur un label sans séparateur', () => {
+  const r = parseYouTube('Blinding Lights (Official Video)', 'The Weeknd');
+  assert.deepEqual(r, { title: 'Blinding Lights', artists: ['The Weeknd'], swappable: false });
+});
+
+test('parseYouTube utilise la chaîne Topic telle quelle', () => {
+  const r = parseYouTube('Get Lucky - Radio Edit', 'Daft Punk - Topic');
+  assert.equal(r.title, 'Get Lucky - Radio Edit');
+  assert.equal(r.artists[0], 'Daft Punk');
+});
+
+test('parseYouTube récupère les featurings des deux côtés', () => {
+  const r = parseYouTube('Drake ft. Rihanna - Take Care (Official Video)', 'DrakeVEVO');
+  assert.equal(r.title, 'Take Care');
+  assert.deepEqual(r.artists, ['Drake', 'Rihanna']);
+  const r2 = parseYouTube('Daft Punk - Get Lucky (feat. Pharrell Williams)', 'Daft Punk');
+  assert.deepEqual(r2.artists, ['Daft Punk', 'Pharrell Williams']);
+});
+
+test('parseYouTube sépare les collaborations', () => {
+  const r = parseYouTube('Drake x Future - Jumpman', 'Drake');
+  assert.deepEqual(r.artists, ['Drake x Future', 'Drake', 'Future']);
+});
+
+test('parseYouTube gère Artiste \'Titre\' et Artiste「Titre」', () => {
+  const r = parseYouTube("BTS (방탄소년단) 'Dynamite' Official MV", 'HYBE LABELS');
+  assert.equal(r.title, 'Dynamite');
+  assert.equal(r.artists[0], 'BTS');
+  const r2 = parseYouTube('YOASOBI「アイドル」 Official Music Video', 'Ayase / YOASOBI');
+  assert.equal(r2.title, 'アイドル');
+  assert.equal(r2.artists[0], 'YOASOBI');
+  const r3 = parseYouTube('Nekfeu "On verra"', 'Nekfeu');
+  assert.equal(r3.title, 'On verra');
+});
+
+test('parseYouTube ne prend pas une apostrophe pour une citation', () => {
+  const r = parseYouTube("Don't Stop Me Now", 'Queen Official');
+  assert.deepEqual(r, { title: "Don't Stop Me Now", artists: ['Queen'], swappable: false });
+});
+
+test('parseYouTube gère le format COLORS', () => {
+  const r = parseYouTube('Arlo Parks - Black Dog | A COLORS SHOW', 'COLORS');
+  assert.equal(r.title, 'Black Dog');
+  assert.equal(r.artists[0], 'Arlo Parks');
 });
