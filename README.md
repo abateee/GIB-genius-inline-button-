@@ -6,7 +6,7 @@ Extension Chrome / Brave / Edge / Firefox qui ajoute un petit bouton **Genius** 
 
 - lit le titre et l'artiste affichés sur la page, au moment du clic
 - nettoie ce qui gêne la recherche : (Official Video), [Clip Officiel], (Lyrics), (Remastered 2011), feat., #hashtags, "TheWeekndVEVO", "Daft Punk - Topic"...
-- cherche le morceau sur Genius et ouvre directement la bonne page
+- cherche le morceau sur Genius et ouvre directement la bonne page (si "Titre Artiste1 x Artiste2" ne donne rien, elle retente avec un seul artiste, puis avec le titre seul)
 - si elle n'est pas sûre du résultat (ou si Genius ne répond pas), elle ouvre la page de recherche Genius plutôt qu'une mauvaise chanson
 
 Sur YouTube, le bouton n'apparaît que sur les vidéos qui ressemblent à de la musique (chaîne Topic, VEVO ou label, titre "Artiste - Titre", mots comme clip, lyrics, feat.). Pas de bouton sur les Shorts ni sur l'accueil. Sur Spotify, rien pour les podcasts et les pubs.

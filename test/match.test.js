@@ -119,3 +119,17 @@ test('pickBestSong ne prend pas un autre artiste avec un titre seulement proche'
   const songs = [song(1, 'Hello World', 'Someone Else')];
   assert.equal(pickBestSong(songs, { title: 'Hello', artists: ['Adele'] }), null);
 });
+
+const { searchQueries } = require('../lib/match.js');
+
+test('extractSongHits ignore la section "lyric" (mots trouvés dans les paroles)', () => {
+  const json = multi({ type: 'lyric', hits: [{ type: 'song', result: song(7, 'Tracklist', 'X') }] });
+  assert.deepEqual(extractSongHits(json), []);
+});
+
+test('searchQueries', () => {
+  assert.deepEqual(searchQueries({ title: 'Song', artists: ['A'] }), ['Song A', 'Song']);
+  assert.deepEqual(searchQueries({ title: 'Song', artists: ['A & B', 'A', 'B'] }), ['Song A & B', 'Song A', 'Song']);
+  assert.deepEqual(searchQueries({ title: 'Song', artists: [] }), ['Song']);
+  assert.deepEqual(searchQueries({ title: '', artists: ['A'] }), []);
+});

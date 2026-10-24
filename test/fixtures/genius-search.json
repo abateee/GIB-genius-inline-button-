@@ -1,0 +1,463 @@
+{
+ "_comment": "Extraits de vraies réponses de genius.com/api/search/multi (octobre 2026), réduits aux champs utilisés.",
+ "Blinding Lights The Weeknd": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "type": "album",
+       "result": {
+        "id": 1,
+        "name": "x"
+       }
+      },
+      {
+       "type": "album",
+       "result": {
+        "id": 1,
+        "name": "x"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 5049949,
+        "title": "Blinding Lights",
+        "primary_artist": {
+         "name": "The Weeknd"
+        },
+        "artist_names": "The Weeknd",
+        "url": "https://genius.com/The-weeknd-blinding-lights-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 5049949,
+        "title": "Blinding Lights",
+        "primary_artist": {
+         "name": "The Weeknd"
+        },
+        "artist_names": "The Weeknd",
+        "url": "https://genius.com/The-weeknd-blinding-lights-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 6181749,
+        "title": "Blinding Lights (Remix)",
+        "primary_artist": {
+         "name": "The Weeknd"
+        },
+        "artist_names": "The Weeknd & ROSALÍA",
+        "url": "https://genius.com/The-weeknd-and-rosalia-blinding-lights-remix-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 8879997,
+        "title": "Blinding Lights (Live)",
+        "primary_artist": {
+         "name": "The Weeknd"
+        },
+        "artist_names": "The Weeknd",
+        "url": "https://genius.com/The-weeknd-blinding-lights-live-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "lyric",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 5370159,
+        "title": "MEMENTO MORI Ep. 8 Tracklist",
+        "primary_artist": {
+         "name": "The Weeknd"
+        },
+        "artist_names": "The Weeknd",
+        "url": "https://genius.com/The-weeknd-memento-mori-ep-8-tracklist-annotated"
+       }
+      }
+     ]
+    },
+    {
+     "type": "artist",
+     "hits": [
+      {
+       "type": "artist",
+       "result": {
+        "id": 2,
+        "name": "x"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Get Lucky Daft Punk": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 139968,
+        "title": "Get Lucky",
+        "primary_artist": {
+         "name": "Daft Punk"
+        },
+        "artist_names": "Daft Punk (Ft. Nile Rodgers & Pharrell Williams)",
+        "url": "https://genius.com/Daft-punk-get-lucky-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 1850274,
+        "title": "Get Lucky (Daft Punk Remix)",
+        "primary_artist": {
+         "name": "Daft Punk"
+        },
+        "artist_names": "Daft Punk",
+        "url": "https://genius.com/Daft-punk-get-lucky-daft-punk-remix-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 139968,
+        "title": "Get Lucky",
+        "primary_artist": {
+         "name": "Daft Punk"
+        },
+        "artist_names": "Daft Punk (Ft. Nile Rodgers & Pharrell Williams)",
+        "url": "https://genius.com/Daft-punk-get-lucky-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 3276417,
+        "title": "Get Lucky (Daft Punk ft. Pharrell Williams cover)",
+        "primary_artist": {
+         "name": "Helia"
+        },
+        "artist_names": "Helia",
+        "url": "https://genius.com/Helia-get-lucky-daft-punk-ft-pharrell-williams-cover-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Papaoutai Stromae": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 150485,
+        "title": "Papaoutai",
+        "primary_artist": {
+         "name": "Stromae"
+        },
+        "artist_names": "Stromae",
+        "url": "https://genius.com/Stromae-papaoutai-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 150485,
+        "title": "Papaoutai",
+        "primary_artist": {
+         "name": "Stromae"
+        },
+        "artist_names": "Stromae",
+        "url": "https://genius.com/Stromae-papaoutai-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 194144,
+        "title": "Stromae - Papaoutai (English Translation)",
+        "primary_artist": {
+         "name": "Genius English Translations"
+        },
+        "artist_names": "Genius English Translations",
+        "url": "https://genius.com/Genius-english-translations-stromae-papaoutai-english-translation-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 207537,
+        "title": "Papaoutai (Remix)",
+        "primary_artist": {
+         "name": "Stromae"
+        },
+        "artist_names": "Stromae (Ft. Angel Haze)",
+        "url": "https://genius.com/Stromae-papaoutai-remix-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "アイドル YOASOBI": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 10903007,
+        "title": "ディオが「アイドル/Yoasobi」を歌ってみた【ライバル】",
+        "primary_artist": {
+         "name": "しゃりんジョースター (Sharin Joestar)"
+        },
+        "artist_names": "しゃりんジョースター (Sharin Joestar)",
+        "url": "https://genius.com/Sharin-joestar-yoasobi-lyrics"
+       }
+      },
+      {
+       "type": "album",
+       "result": {
+        "id": 1,
+        "name": "x"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 8842895,
+        "title": "アイドル (Idol)",
+        "primary_artist": {
+         "name": "YOASOBI"
+        },
+        "artist_names": "YOASOBI",
+        "url": "https://genius.com/Yoasobi-idol-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 8842895,
+        "title": "アイドル (Idol)",
+        "primary_artist": {
+         "name": "YOASOBI"
+        },
+        "artist_names": "YOASOBI",
+        "url": "https://genius.com/Yoasobi-idol-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 9163632,
+        "title": "アイドル (Idol) (Instrumental)",
+        "primary_artist": {
+         "name": "YOASOBI"
+        },
+        "artist_names": "YOASOBI",
+        "url": "https://genius.com/Yoasobi-idol-instrumental-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Bohemian Rhapsody Queen": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 1063,
+        "title": "Bohemian Rhapsody",
+        "primary_artist": {
+         "name": "Queen"
+        },
+        "artist_names": "Queen",
+        "url": "https://genius.com/Queen-bohemian-rhapsody-lyrics"
+       }
+      },
+      {
+       "type": "song",
+       "result": {
+        "id": 2123526,
+        "title": "Bohemian Rhapsody",
+        "primary_artist": {
+         "name": "The Muppets"
+        },
+        "artist_names": "The Muppets & Queen",
+        "url": "https://genius.com/The-muppets-and-queen-bohemian-rhapsody-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 5334102,
+        "title": "Bohemian Rhapsody",
+        "primary_artist": {
+         "name": "Queen"
+        },
+        "artist_names": "Queen & Paul Rodgers",
+        "url": "https://genius.com/Queen-and-paul-rodgers-bohemian-rhapsody-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Jumpman Drake x Future": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 2379615,
+        "title": "OVO Sound Radio Episode 11 Tracklist",
+        "primary_artist": {
+         "name": "Drake"
+        },
+        "artist_names": "Drake",
+        "url": "https://genius.com/Drake-ovo-sound-radio-episode-11-tracklist-lyrics"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": []
+    },
+    {
+     "type": "lyric",
+     "hits": [
+      {
+       "type": "song",
+       "result": {
+        "id": 2310784,
+        "title": "OVO Sound Radio Episode 6 Tracklist",
+        "primary_artist": {
+         "name": "Drake"
+        },
+        "artist_names": "Drake",
+        "url": "https://genius.com/Drake-ovo-sound-radio-episode-6-tracklist-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Jumpman Drake": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "index": "song",
+       "type": "song",
+       "result": {
+        "id": 2311373,
+        "title": "Jumpman",
+        "primary_artist": {
+         "name": "Drake"
+        },
+        "artist_names": "Drake & Future",
+        "url": "https://genius.com/Drake-and-future-jumpman-lyrics"
+       }
+      },
+      {
+       "index": "lyric",
+       "type": "song",
+       "result": {
+        "id": 2310784,
+        "title": "OVO Sound Radio Episode 6 Tracklist",
+        "primary_artist": {
+         "name": "Drake"
+        },
+        "artist_names": "Drake",
+        "url": "https://genius.com/Drake-ovo-sound-radio-episode-6-tracklist-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

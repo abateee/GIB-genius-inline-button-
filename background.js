@@ -13,7 +13,8 @@ if (typeof importScripts === 'function' && typeof GIBMatch === 'undefined') {
 }
 
 const ext = globalThis.browser ?? globalThis.chrome;
-const FETCH_TIMEOUT_MS = 3000;
+// Total budget for all queries: the page gives up after 4.5 s (popup window).
+const SEARCH_BUDGET_MS = 3500;
 const CACHE_MAX = 200;
 const cache = new Map();
 
@@ -32,9 +33,9 @@ function remember(key, url) {
   cache.set(key, url);
 }
 
-async function searchGenius(query) {
+async function searchGenius(query, timeoutMs) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const response = await fetch(GIBMatch.searchApiUrl(query), {
       signal: controller.signal,
@@ -57,16 +58,23 @@ async function resolveUrl(ctx) {
   const key = JSON.stringify([ctx.title, ctx.artists, ctx.swappable]).toLowerCase();
   if (cache.has(key)) return { url: cache.get(key), matched: true };
 
-  try {
-    const json = await searchGenius(query);
-    const best = GIBMatch.pickBestSong(GIBMatch.extractSongHits(json), ctx);
-    if (best && GIBMatch.isGeniusUrl(best.url)) {
-      remember(key, best.url);
-      return { url: best.url, matched: true };
+  const deadline = Date.now() + SEARCH_BUDGET_MS;
+  for (const candidate of GIBMatch.searchQueries(ctx)) {
+    const remaining = deadline - Date.now();
+    if (remaining < 300) break;
+    try {
+      const json = await searchGenius(candidate, remaining);
+      const best = GIBMatch.pickBestSong(GIBMatch.extractSongHits(json), ctx);
+      if (best && GIBMatch.isGeniusUrl(best.url)) {
+        remember(key, best.url);
+        return { url: best.url, matched: true };
+      }
+    } catch (error) {
+      // Network error, timeout, Cloudflare page, format change: retrying won't help,
+      // the search page still works.
+      console.warn('[GIB] Genius search failed, falling back to the search page.', error);
+      break;
     }
-  } catch (error) {
-    // Network error, timeout, Cloudflare page, format change: the search page still works.
-    console.warn('[GIB] Genius search failed, falling back to the search page.', error);
   }
   return { url: fallback, matched: false };
 }
