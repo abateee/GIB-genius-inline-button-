@@ -19,6 +19,30 @@
     return globalThis.GIBParse.collapse(el?.textContent);
   }
 
+  // The "Music" card YouTube adds under the description: one song = song + artist.
+  function readYouTubeMusicCard() {
+    for (const list of document.querySelectorAll('ytd-watch-metadata ytd-horizontal-card-list-renderer')) {
+      const cards = list.querySelectorAll('yt-video-attribute-view-model');
+      if (cards.length !== 1) continue; // several songs: a mix or a compilation
+      const card = cards[0];
+      const header = text(list.querySelector('ytd-rich-list-header-renderer'));
+      const isAlbumLink = !!card.querySelector('a[href*="list=OLAK5uy"]');
+      if (!isAlbumLink && !/^(?:music|musique|m[uú]sica|musik|muziek|muzyka|музыка|音楽|음악|音乐)/i.test(header)) continue;
+      return { title: text(card.querySelector('h1')), artist: text(card.querySelector('h4')) };
+    }
+    return null;
+  }
+
+  // Description text without the "...more" button: expanded text when open, snippet otherwise.
+  function readYouTubeDescription() {
+    const expander = document.querySelector('ytd-watch-metadata ytd-text-inline-expander');
+    if (!expander) return '';
+    const expanded = expander.querySelector('#expanded');
+    if (expanded && expanded.textContent.trim()) return expanded.textContent;
+    const snippet = expander.querySelector('#snippet-text, #attributed-snippet-text');
+    return snippet ? snippet.textContent : '';
+  }
+
   function getYouTubeContext() {
     // YouTube keeps the last watch page hidden in the DOM when you go back to
     // the home page or open a Short: only real watch pages get a button.
@@ -36,9 +60,12 @@
 
     const rawTitle = text(titleNode);
     const rawChannel = text(artistNode);
-    if (!globalThis.GIBParse.isLikelyMusicVideo(rawTitle, rawChannel)) return null;
+    // Songs without the artist in the title ("Love Is A State" by Bladee) are
+    // still recognized thanks to what YouTube itself says about the song.
+    const extra = { card: readYouTubeMusicCard(), description: readYouTubeDescription() };
+    if (!globalThis.GIBParse.isLikelyMusicVideo(rawTitle, rawChannel, extra)) return null;
 
-    const parsed = globalThis.GIBParse.parseYouTube(rawTitle, rawChannel);
+    const parsed = globalThis.GIBParse.parseYouTube(rawTitle, rawChannel, extra);
     return {
       titleNode,
       title: parsed.title,

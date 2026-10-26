@@ -53,3 +53,12 @@ test('"Jumpman Drake" (2e recherche) trouve le morceau de Drake & Future', () =>
 test('un résultat "index: lyric" dans top_hit est ignoré', () => {
   assert.deepEqual(extractSongHits(fixtures['Jumpman Drake']).map(s => s.id), [2311373]);
 });
+
+test('vrai cas YouTube : "Love Is A State" sur la chaîne auto-générée de Bladee', () => {
+  const ctx = parseYouTube('Love Is A State', 'Bladee', {
+    card: { title: 'Love Is A State', artist: 'Bladee' },
+    description: 'Provided to YouTube by The Orchard Enterprises\n\nLove Is A State · Bladee · Benjamin Reichwald · Arthur Nyqvist · Axel Tufvesson'
+  });
+  assert.equal(searchQueries(ctx)[0], 'Love Is A State Bladee');
+  assert.equal(pick('Love Is A State Bladee', ctx).url, 'https://genius.com/Bladee-love-is-a-state-lyrics');
+});

@@ -9,7 +9,7 @@ Extension Chrome / Brave / Edge / Firefox qui ajoute un petit bouton **Genius** 
 - cherche le morceau sur Genius et ouvre directement la bonne page (si "Titre Artiste1 x Artiste2" ne donne rien, elle retente avec un seul artiste, puis avec le titre seul)
 - si elle n'est pas sûre du résultat (ou si Genius ne répond pas), elle ouvre la page de recherche Genius plutôt qu'une mauvaise chanson
 
-Sur YouTube, le bouton n'apparaît que sur les vidéos qui ressemblent à de la musique (chaîne Topic, VEVO ou label, titre "Artiste - Titre", mots comme clip, lyrics, feat.). Pas de bouton sur les Shorts ni sur l'accueil. Sur Spotify, rien pour les podcasts et les pubs.
+Sur YouTube, le bouton n'apparaît que sur les vidéos qui ressemblent à de la musique : carte "Musique" de YouTube qui correspond au titre, description "Provided to YouTube by" (vidéos auto-générées, même quand le titre ne contient pas l'artiste), chaîne VEVO ou label, titre "Artiste - Titre", mots comme clip, lyrics, feat. Quand YouTube nomme lui-même le morceau, c'est ce nom-là qui est cherché sur Genius. Pas de bouton sur les Shorts ni sur l'accueil. Sur Spotify, rien pour les podcasts et les pubs.
 
 Astuce : clic molette ou Ctrl+clic pour ouvrir Genius en arrière-plan.
 
@@ -70,7 +70,7 @@ Le titre et l'artiste ne sont envoyés à Genius qu'au moment où tu cliques. Ri
 
 - L'API de recherche utilisée est celle du site genius.com, elle n'est pas documentée. Si elle change, l'extension se rabat sur la page de recherche Genius.
 - Si YouTube ou Spotify changent leur HTML, les sélecteurs de `content.js` devront être mis à jour.
-- Sur YouTube, une chanson postée avec juste son titre (sans artiste ni mention "clip", "lyrics"...) sur une chaîne qui n'est ni Topic, ni VEVO, ni un label n'aura pas de bouton.
+- Sur YouTube, une chanson postée avec juste son titre, sans carte "Musique" ni mention "clip", "lyrics"..., sur une chaîne qui n'est ni VEVO ni un label, n'aura pas de bouton.
 
 ## Développement
 

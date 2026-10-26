@@ -459,5 +459,63 @@
     }
    ]
   }
+ },
+ "Love Is A State Bladee": {
+  "meta": {
+   "status": 200
+  },
+  "response": {
+   "sections": [
+    {
+     "type": "top_hit",
+     "hits": [
+      {
+       "index": "song",
+       "type": "song",
+       "result": {
+        "id": 13290495,
+        "title": "Love Is A State",
+        "primary_artist": {
+         "name": "Bladee"
+        },
+        "artist_names": "Bladee",
+        "url": "https://genius.com/Bladee-love-is-a-state-lyrics"
+       }
+      },
+      {
+       "index": "lyric",
+       "type": "song",
+       "result": {
+        "id": 12804002,
+        "title": "2026 favorites (albums, eps & songs)",
+        "primary_artist": {
+         "name": "miloml"
+        },
+        "artist_names": "miloml",
+        "url": "https://genius.com/Miloml-2026-favorites-albums-eps-and-songs-annotated"
+       }
+      }
+     ]
+    },
+    {
+     "type": "song",
+     "hits": [
+      {
+       "index": "song",
+       "type": "song",
+       "result": {
+        "id": 13290495,
+        "title": "Love Is A State",
+        "primary_artist": {
+         "name": "Bladee"
+        },
+        "artist_names": "Bladee",
+        "url": "https://genius.com/Bladee-love-is-a-state-lyrics"
+       }
+      }
+     ]
+    }
+   ]
+  }
  }
 }

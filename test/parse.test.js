@@ -244,3 +244,43 @@ test('cleanTitle ne coupe pas un nom en dehors des featurings', () => {
   assert.equal(cleanTitle('Simon and Garfunkel - Song').title, 'Simon and Garfunkel - Song');
   assert.deepEqual(parseYouTube('Simon & Garfunkel - The Boxer', 'x').artists[0], 'Simon & Garfunkel');
 });
+
+const { parseProvidedLine } = require('../lib/parse.js');
+
+const BLADEE_DESC = 'Provided to YouTube by The Orchard Enterprises\n\nLove Is A State · Bladee · Benjamin Reichwald · Arthur Nyqvist · Axel Tufvesson';
+
+test('parseProvidedLine lit "Titre · Artiste · Artiste" des vidéos auto-générées', () => {
+  assert.deepEqual(parseProvidedLine(BLADEE_DESC), {
+    title: 'Love Is A State', artists: ['Bladee', 'Benjamin Reichwald', 'Arthur Nyqvist', 'Axel Tufvesson']
+  });
+  assert.deepEqual(
+    parseProvidedLine('Provided to YouTube by Columbia\n\nGet Lucky (feat. Pharrell Williams and Nile Rodgers) · Daft Punk · Pharrell Williams …'),
+    { title: 'Get Lucky (feat. Pharrell Williams and Nile Rodgers)', artists: ['Daft Punk', 'Pharrell Williams'] }
+  );
+  assert.equal(parseProvidedLine('Mon vlog à Paris\n\nmusique : X · Y'), null);
+  assert.equal(parseProvidedLine(''), null);
+});
+
+test('vrai cas : titre sans artiste sur une chaîne auto-générée (Bladee)', () => {
+  const extra = { card: { title: 'Love Is A State', artist: 'Bladee' }, description: BLADEE_DESC };
+  assert.ok(isLikelyMusicVideo('Love Is A State', 'Bladee', extra));
+  assert.equal(isLikelyMusicVideo('Love Is A State', 'Bladee'), false);
+  const r = parseYouTube('Love Is A State', 'Bladee', extra);
+  assert.deepEqual(r, { title: 'Love Is A State', artists: ['Bladee'], swappable: false });
+  // Sans carte, la description suffit.
+  const r2 = parseYouTube('Love Is A State', 'Bladee', { description: BLADEE_DESC });
+  assert.equal(r2.title, 'Love Is A State');
+  assert.equal(r2.artists[0], 'Bladee');
+});
+
+test('la carte Musique donne le bon titre sur un clip officiel', () => {
+  const extra = { card: { title: 'Get Lucky (feat. Pharrell Williams and Nile Rodgers)', artist: 'Daft Punk' } };
+  const r = parseYouTube('Daft Punk - Get Lucky (Official Audio) ft. Pharrell Williams, Nile Rodgers', 'Daft Punk', extra);
+  assert.deepEqual(r, { title: 'Get Lucky', artists: ['Daft Punk', 'Pharrell Williams', 'Nile Rodgers'], swappable: false });
+});
+
+test('la carte Musique d\'un vlog (musique de fond) est ignorée', () => {
+  const extra = { card: { title: 'Blinding Lights', artist: 'The Weeknd' } };
+  assert.equal(isLikelyMusicVideo('Une journée à Lille', 'Robin', extra), false);
+  assert.deepEqual(parseYouTube('Une journée à Lille', 'Robin', extra).artists, ['Robin']);
+});
